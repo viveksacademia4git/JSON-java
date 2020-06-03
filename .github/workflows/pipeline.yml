@@ -61,27 +61,23 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      #### ---- Maven Build ----
+      #### ---- Maven Build and Upload Artifact Built by Maven ----
       - name: Maven Package
         run: mvn -B package --file pom.xml
-      #### ---- Create 'target/libs' directory to store Artifact Built by Maven ----
-      - name: Copy Files for Maven Artifact
+      - name: Make 'target/libs' directory to store Maven Artifact
         run: mkdir target/libs
-      #### ---- Move jars files to 'target/libs' directory ----
       - name: Copy Files for Maven Artifact
         run: cp target/*.jar target/libs
-      #### ---- Upload Artifact Built by Maven ----
       - uses: actions/upload-artifact@v1
-      #- name: Upload Artifact Built by Maven
         with:
           name: JSON-java-maven
           path: target/libs
-      #### ---- Gradle Build ----
+      - name: Delete  'target/libs' directory
+        run: rm -rf target/libs
+      #### ---- Gradle Build and Upload Artifact Built by Gradle ----
       - name: Gradle Build
         run: sh ./gradlew build
-      #### ---- Upload Artifact Built by Gradle ----
       - uses: actions/upload-artifact@v1
-      #- name: Upload Artifact Built by Gradle
         with:
           name: JSON-java-gradle
           path: build/libs
