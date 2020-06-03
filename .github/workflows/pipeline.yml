@@ -51,7 +51,7 @@ jobs:
       run: mvn -B package --file pom.xml
   gradle_assemble:
     name: Gradle Assemble
-    needs: maven_build
+    needs: maven_package
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
