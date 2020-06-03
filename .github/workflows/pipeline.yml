@@ -11,7 +11,7 @@ on:
 
 jobs:
   maven_compile:
-    name: Setup
+    name: Maven Compile
     #needs: commit_at
     runs-on: ubuntu-latest
     steps:
@@ -20,6 +20,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    ## Maven Clean
+    - name: Maven Clean
+      run: mvn clean
     ## Maven Compile
     - name: Compile with Maven
       run: mvn compile
@@ -59,8 +62,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    ## Gradle Clean
+    - name: Gradle Clean
+      run: sh ./gradlew clean
     ## Gradle Assemble
-    - name: Assemble with Gradle
+    - name: Gradle Assemble
       run: sh ./gradlew assemble
   gradle_check:
     name: Gradle Check
@@ -73,7 +79,7 @@ jobs:
       with:
         java-version: 1.8
     ## Gradle Check
-    - name: Gradle Check, Gradle Test is inclusive
+    - name: Gradle Check > Gradle Test is inclusive
       run: sh ./gradlew check
   gradle_build:
     name: Build
@@ -88,9 +94,10 @@ jobs:
     ## Gradle Build
     - name: Build with Gradle
       run: sh ./gradlew build
+    ## Upload Artifact
     - uses: actions/upload-artifact@v1
       with:
-        name: JSON-java-gradle
+        name: JSON-java
         path: build/libs
 
  # Deploy Script Comes here
