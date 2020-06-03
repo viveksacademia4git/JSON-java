@@ -65,17 +65,17 @@ jobs:
       - name: Maven Package
         run: mvn -B package --file pom.xml
       #### ---- Create 'target/libs' directory to store Artifact Built by Maven ----
-      - name: Copy Files for Maven Artifact
-        run: mkdir target/libs
+      #- name: Copy Files for Maven Artifact
+      #  run: mkdir target/libs
       #### ---- Move jars files to 'target/libs' directory ----
-      - name: Copy Files for Maven Artifact
-        run: cp target/*.jar target/libs
+      #- name: Copy Files for Maven Artifact
+      #  run: cp target/*.jar target/libs
       #### ---- Upload Artifact Built by Maven ----
-      - uses: actions/upload-artifact@v1
-      - name: Upload Artifact Built by Maven
-        with:
-          name: JSON-java-maven
-          path: target/libs
+      #- uses: actions/upload-artifact@v1
+      #- name: Upload Artifact Built by Maven
+      #  with:
+      #    name: JSON-java-maven
+      #    path: target/libs
       #### ---- Gradle Build ----
       - name: Gradle Build
         run: sh ./gradlew build
