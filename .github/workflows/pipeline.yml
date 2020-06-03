@@ -11,6 +11,7 @@ on:
 
 jobs:
   compile:
+    name: Compile and Assemble
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,6 +24,7 @@ jobs:
     - name: Assemble with Gradle
       run: sh ./gradlew assemble
   test:
+    name: Test Stage
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +37,7 @@ jobs:
     - name: Gradle Check, Gradle Test is inclusive
       run: sh ./gradlew check
   build:
+    name: Build State
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -46,6 +49,22 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Build with Gradle
       run: sh ./gradlew build
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Package
+        path: build/libs
+  artifact:
+    name: Create Artifact
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Artifact From 'build' Job
+        uses: actions/upload-artifact@v1
+        with:
+          name: Package
+          path: build/libs
+
+ # Deploy Script Comes here
     #- name: Publish to GitHub Packages Apache Maven
     #  run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
     #  env:
