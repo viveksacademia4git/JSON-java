@@ -33,7 +33,7 @@ jobs:
     - name: Test with Maven
       run: mvn test
     - name: Gradle Check, Gradle Test is inclusive
-      run: sh ./gradlew assemble check
+      run: sh ./gradlew check
   build:
     runs-on: ubuntu-latest
     steps:
