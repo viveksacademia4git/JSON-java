@@ -13,16 +13,17 @@ jobs:
   commit_at:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@0.3.0
-        id: author-date
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
-            return commit_details.data.author.date
-      - run: echo $COMMITTED_AT
-        env:
-          COMMITTED_AT: ${{ steps.author-date.outputs.result }}
+    - uses: actions/commitinfo
+    - uses: actions/github-script@0.3.0
+      id: author-date
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
+          return commit_details.data.author.date
+    - run: echo $COMMITTED_AT
+      env:
+        COMMITTED_AT: ${{ steps.author-date.outputs.result }}
   compile:
     name: Compile and Assemble Job
     needs: commit_at
@@ -35,10 +36,6 @@ jobs:
         java-version: 1.8
     - name: Compile with Maven
       run: mvn compile
-    - name: Cache Gradle packages
-      uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
     - name: Assemble with Gradle
       run: sh ./gradlew assemble
   test:
