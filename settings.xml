@@ -1,0 +1,5 @@
+<server>
+  <id>github</id>
+  <username>viveksacademia4git</username>
+  <password>${env.GITHUB_TOKEN}</password>
+</server>
