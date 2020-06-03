@@ -34,8 +34,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    ## Maven Compile
     - name: Compile with Maven
       run: mvn compile
+    ## Gradle Assemble
     - name: Assemble with Gradle
       run: sh ./gradlew assemble
   test:
@@ -48,8 +50,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    ## Maven Test
     - name: Test with Maven
       run: mvn test
+    ## Gradle Check
     - name: Gradle Check, Gradle Test is inclusive
       run: sh ./gradlew check
   build:
@@ -62,9 +66,18 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    ## Maven Build
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    ## Create Time Stamp for Artifact:
     - uses: actions/github-script@0.3.0
+      id: author-date
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const commit_details = await github.git.getCommit({owner: context.repo.owner, repo: context.repo.repo, commit_sha: context.sha});
+          return commit_details.data.author.date
+    ## Gradle Build
     - name: Build with Gradle
       run: sh ./gradlew build
     - uses: actions/upload-artifact@v1
