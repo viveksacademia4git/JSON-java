@@ -36,8 +36,8 @@ jobs:
     ## Maven Test
     - name: Test with Maven
       run: mvn test
-  maven_build:
-    name: Maven Build
+  maven_package:
+    name: Maven Package
     needs: maven_test
     runs-on: ubuntu-latest
     steps:
@@ -49,10 +49,6 @@ jobs:
     ## Maven Build
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - uses: actions/upload-artifact@v1
-      with:
-        name: JSON-java-maven
-        path: build/libs
   gradle_assemble:
     name: Gradle Assemble
     needs: maven_build
