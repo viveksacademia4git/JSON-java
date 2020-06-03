@@ -10,95 +10,68 @@ on:
     branches: [ master ]
 
 jobs:
-  maven_compile:
-    name: Maven Compile
+
+  setup_pipeline:
+    name: Setup Pipeline
     #needs: commit_at
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Maven Clean
-    - name: Maven Clean
-      run: mvn clean
-    ## Maven Compile
-    - name: Compile with Maven
-      run: mvn compile
-  maven_test:
-    name: Maven Test
-    needs: maven_compile
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      #### ---- Maven Clean ----
+      - name: Maven Clean
+        run: mvn clean
+      #### ---- Maven Compile ----
+      - name: Compile with Maven
+        run: mvn compile
+      #### ---- Gradle Clean ----
+      - name: Gradle Clean
+        run: sh ./gradlew clean
+      #### ---- Gradle Assemble ----
+      - name: Gradle Assemble
+        run: sh ./gradlew assemble
+
+  test:
+    name: Test
+    needs: setup_pipeline
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Maven Test
-    - name: Test with Maven
-      run: mvn test
-  maven_package:
-    name: Maven Package
-    needs: maven_test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Maven Build
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-  gradle_assemble:
-    name: Gradle Assemble
-    needs: maven_package
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Gradle Clean
-    - name: Gradle Clean
-      run: sh ./gradlew clean
-    ## Gradle Assemble
-    - name: Gradle Assemble
-      run: sh ./gradlew assemble
-  gradle_check:
-    name: Gradle Check
-    needs: gradle_assemble
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Gradle Check
-    - name: Gradle Check > Gradle Test is inclusive
-      run: sh ./gradlew check
-  gradle_build:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      #### ---- Maven Test ----
+      - name: Test with Maven
+        run: mvn test
+      #### ---- Gradle Test ----
+      - name: Gradle Test
+        run: sh ./gradlew test
+
+  build:
     name: Build
-    needs: gradle_check
+    needs: test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.8
-    ## Gradle Build
-    - name: Build with Gradle
-      run: sh ./gradlew build
-    ## Upload Artifact
-    - uses: actions/upload-artifact@v1
-      with:
-        name: JSON-java
-        path: build/libs
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      #### ---- Maven Build ----
+      - name: Package with Maven
+        run: mvn -B package --file pom.xml
+      #### ---- Gradle Build ----
+      - name: Build with Gradle
+        run: sh ./gradlew build
+      #### ---- Upload Artifact Built by Gradle ----
+      - uses: actions/upload-artifact@v1
+        with:
+          name: JSON-java
+          path: build/libs
 
  # Deploy Script Comes here
     #- name: Publish to GitHub Packages Apache Maven
