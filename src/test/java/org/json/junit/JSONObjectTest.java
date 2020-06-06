@@ -3149,4 +3149,76 @@ public class JSONObjectTest {
         fail("Expected an exception");
     }
 
+    @SuppressWarnings("serial")
+	@Test
+    public void testJSONObjectPutMap() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+    	assertEquals("Value mapped with KEY['one'] must be 1.", 1, jsonObject.get("one"));
+    	assertEquals("Length of JSONObject must be 1.", 1, jsonObject.length());
+        // Map Inserted
+    	assertNotNull(jsonObject.put(new HashMap<String, Object>(){{ put("two", 2); }}));
+    	assertTrue("JSONObject contains KEY['two'].", jsonObject.has("two"));
+    	assertEquals("Value mapped with KEY['two'] must be 2.", 2, jsonObject.get("two"));
+    	assertEquals("Length of JSONObject must be 2.", 2, jsonObject.length());
+    }
+    @Test
+    public void testJSONObjectPutMapNull() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+    	assertEquals("Length of JSONObject must be 1", 1, jsonObject.length());
+    	jsonObject.put(null);
+    	assertEquals("Length of JSONObject must not change and remain 1 like before.",
+    			1, jsonObject.length());
+    }
+    @Test
+    public void testJSONObjectPutMapEmpty() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+    	assertEquals("Length of JSONObject must be 1", 1, jsonObject.length());
+    	jsonObject.put(new HashMap<>());
+    	assertEquals("Length of JSONObject must not change and remain 1 like before.",
+    			1, jsonObject.length());
+    }
+    @SuppressWarnings("serial")
+	@Test
+    public void testJSONObjectPutMapReassignedValue() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+        // Map Inserted
+    	jsonObject.put(new HashMap<String, Object>(){{ put("two", 2); }});
+    	assertEquals("Value mapped with KEY['two'] must be 2.", 2, jsonObject.get("two"));
+    	assertEquals("Length of JSONObject must be 2.", 2, jsonObject.length());
+        // Map that Reassigns Value Inserted
+    	jsonObject.put(new HashMap<String, Object>(){{ put("two", "two"); }});
+    	assertEquals("Value mapped with KEY['two'] must be 'two'.", "two", jsonObject.get("two"));
+    	assertEquals("Length of JSONObject must not change and remain 2 like before.",
+    			2, jsonObject.length());
+    }
+    @Test
+    public void testJSONObjectPutMapWithNullKey() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+        // Map to be inserted
+    	Map<String, Object> map = new HashMap<>();
+    	map.put(null, 3);     // Not Inserted
+    	map.put("three", 3);  // Inserted
+    	jsonObject.put(map);
+    	assertFalse("JSONObject should not have KEY[null]", jsonObject.has(null));
+    	assertTrue("JSONObject should not have KEY['two']", jsonObject.has("three"));
+    	assertEquals("Value mapped with KEY['three'] must be 3.", 3, jsonObject.get("three"));
+    	assertEquals("Length of JSONObject increases by 1 (now 2), because only 1 key-value pair is added from map",
+    			2, jsonObject.length());
+    }
+    @Test
+    public void testJSONObjectPutMapWithNullValue() {
+        JSONObject jsonObject = new JSONObject("{\"one\":1}");
+        // Map to be inserted
+    	Map<String, Object> map = new HashMap<>();
+    	map.put("two", null);  // Not Inserted
+    	jsonObject.put(map);
+    	assertFalse("KEY['two'] must not exist", jsonObject.has("two"));
+    	assertEquals("Length of JSONObject remains constant must be 1", 1, jsonObject.length());
+    	// Modify Map, by assigning a valid value to the key which had null value
+    	map.put("two", 2);     // Inserted
+    	jsonObject.put(map);
+    	assertEquals("Value mapped with KEY['two'] must be 2.", 2, jsonObject.get("two"));
+    	assertEquals("Length of JSONObject increments by 1, now 2", 2, jsonObject.length());
+    }
+
 }

@@ -2598,4 +2598,29 @@ public class JSONObject {
                 "JSONObject[" + quote(key) + "] is not a " + valueType + " (" + value + ")."
                 , cause);
     }
+
+    /**
+     * Copies all the content of the given {@link java.util.Map} object and
+     * puts them into this JSONObject.
+     *
+     * @param map
+     *            A map object whose content is copied to this JSONObject.
+     * @return this.
+     */
+
+    public JSONObject put(Map<?,?> map) {
+    	if (map != null && !map.isEmpty()) {
+	    	for (final Entry<?, ?> e : map.entrySet()) {
+	            final Object key = e.getKey();
+	    	    if (key == null) {
+	    	        continue;
+	    	    }
+	            final Object value = e.getValue();
+	            if (value != null) {
+	                this.map.put(String.valueOf(key), wrap(value));
+	            }
+	        }
+    	}
+    	return this;
+    }
 }
