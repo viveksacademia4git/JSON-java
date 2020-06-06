@@ -2607,8 +2607,7 @@ public class JSONObject {
      *            A map object whose content is copied to this JSONObject.
      * @return this.
      */
-
-    public JSONObject put(Map<?,?> map) {
+     public JSONObject put(Map<?,?> map) {
     	if (map != null && !map.isEmpty()) {
 	    	for (final Entry<?, ?> e : map.entrySet()) {
 	            final Object key = e.getKey();
